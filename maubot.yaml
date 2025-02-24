@@ -1,9 +1,9 @@
 maubot: 0.1.0
-id: org.jobmachine.chatgpt
-version: 0.0.11
+id: at.kw.az_openai
+version: 0.0.1
 modules:
-  - gpt
-main_class: GPTPlugin
+  - az_openai
+main_class: AZOpenAIPlugin
 config: true
 extra_files:
   - base-config.yaml

@@ -1,11 +1,11 @@
 # chatGPT 
 [![Chat on Matrix](https://img.shields.io/badge/chat_on_matrix-%23dev:mssj.me-green)](https://matrix.to/#/#dev:mssj.me)
 
-maubot plugin to allow your maubot instance to return queries from openAI GPT API endpoints.
+maubot plugin to allow your maubot instance to return queries from Azure OpenAI GPT API endpoints.
 
 ## Usage
 
-1. Create the bot instance in Maubot Manager, add your openAI API key to the config, and modify as you see fit.
+1. Create the bot instance in Maubot Manager, add your API key to the config, and modify as you see fit.
 2. Invite the bot to a room.
 3. Ping the bot by mentioning it by name.
 

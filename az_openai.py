@@ -17,8 +17,7 @@ from mautrix.util.config import BaseProxyConfig, ConfigUpdateHelper
 class Config(BaseProxyConfig):
     def do_update(self, helper: ConfigUpdateHelper) -> None:
         helper.copy("api_endpoint")
-        helper.copy("gpt_api_key")
-        helper.copy("model")
+        helper.copy("api_key")
         helper.copy("max_tokens")
         helper.copy("enable_multi_user")
         helper.copy("system_prompt")
@@ -31,7 +30,7 @@ class Config(BaseProxyConfig):
         helper.copy("temperature")
         helper.copy("respond_to_replies")
 
-class GPTPlugin(Plugin):
+class AZOpenAIPlugin(Plugin):
 
     name: str # name of the bot
 
@@ -42,8 +41,8 @@ class GPTPlugin(Plugin):
             await self.client.get_displayname(self.client.mxid) or \
             self.client.parse_user_id(self.client.mxid)[0]
         self.api_endpoint = self.config['api_endpoint']
-        self.log.debug(f"DEBUG gpt plugin started with bot name: {self.name}")
-        self.log.debug(f"DEBUG gpt endpoint set: {self.api_endpoint}")
+        self.log.debug(f"DEBUG Azure OpenAI plugin started with bot name: {self.name}")
+        self.log.debug(f"DEBUG Azure OpenAI endpoint set: {self.api_endpoint}")
 
     def user_allowed(self, mxid) -> bool:
         for u in self.config['allowed_users']:
@@ -85,10 +84,10 @@ class GPTPlugin(Plugin):
             parent_event = await self.client.get_event(room_id=event.room_id, event_id=event.content.get_thread_parent())
             return await self.should_respond(parent_event)
 
-        # Reply to messages replying to the bot by checking if the parent message as the `org.jobmachine.chatgpt` key
+        # Reply to messages replying to the bot by checking if the parent message as the `at.kw.az_openai` key
         if event.content.relates_to.in_reply_to:
             parent_event = await self.client.get_event(room_id=event.room_id, event_id=event.content.get_reply_to())
-            if parent_event.sender == self.client.mxid and "org.jobmachine.chatgpt" in parent_event.content:
+            if parent_event.sender == self.client.mxid and "at.kw.az_openai" in parent_event.content:
                 return True
 
         return False
@@ -113,7 +112,7 @@ class GPTPlugin(Plugin):
 
             content = TextMessageEventContent(msgtype=MessageType.NOTICE, body=response, format=Format.HTML,
                                               formatted_body=markdown.render(response))
-            content["org.jobmachine.chatgpt"] = True
+            content["at.kw.az_openai"] = True
             await event.respond(content, in_thread=self.config['reply_in_thread'])
 
         except Exception as e:
@@ -128,10 +127,9 @@ class GPTPlugin(Plugin):
         full_context.extend(list(prompt))
         headers = {
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {self.config['gpt_api_key']}"
+            "api_key": f"{self.config['api_key']}"
         }
         data = {
-            "model": self.config['model'],
             "messages": full_context,
         }
 
