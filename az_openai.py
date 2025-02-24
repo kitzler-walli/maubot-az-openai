@@ -127,7 +127,7 @@ class AZOpenAIPlugin(Plugin):
         full_context.extend(list(prompt))
         headers = {
             "Content-Type": "application/json",
-            "api_key": f"{self.config['api_key']}"
+            "api-key": f"{self.config['api_key']}"
         }
         data = {
             "messages": full_context,
